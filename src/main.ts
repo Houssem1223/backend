@@ -6,11 +6,21 @@ import { RolesService } from './roles/roles.service'; // Service des rôles
 import { Resource } from './roles/enums/resource.enum';
 import { Action } from './roles/enums/action.enum';
 import { WsAdapter } from '@nestjs/platform-ws';
+import * as bodyParser from 'body-parser';
+import { RawRequest } from './interfaces/raw-request.interface';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
    const roleService = app.get(RolesService);
+   app.use(
+    bodyParser.json({
+      verify: (req: RawRequest, res, buf) => {
+        req.rawBody = buf;
+      },
+    }),
+  );
+
   // Enable global validation pipe
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,         // Automatically strip non-whitelisted properties

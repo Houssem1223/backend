@@ -36,6 +36,14 @@ async login(@Body() loginDto: LoginDto) {
     throw new HttpException(error.message, error.status || HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
+@Post('loginflutter')
+async loginflutter(@Body() loginDto: LoginDto) {
+  try {
+    return await this.userService.loginFlutter(loginDto); // Call the login service method
+  } catch (error) {
+    throw new HttpException(error.message, error.status || HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
 
 
 @Post('refresh')

@@ -127,9 +127,12 @@ import { Role } from 'src/roles/schemas/role.schema';
 
   async login(loginDto: LoginDto): Promise<{ access_token: string ,id:string,username:string}> {
     const { username, password } = loginDto;
+  
 
     // Check if the user exists
-    const user = await this.userModel.findOne({ username }).exec();
+    const user = await this.userModel
+    .findOne({ $or: [{ email: username }, { username: username }] })
+    .exec();
     if (!user) {
       throw new Error('Invalid email ');
     }
@@ -176,7 +179,32 @@ async login2(loginDto: LoginDto): Promise<{ access_token: string }> {
   const access_token = this.jwtService.sign(payload);
   return { access_token };
 }
-    
+async loginFlutter(loginDto: LoginDto): Promise<{ access_token: string,username:string }> {
+  const { username, password } = loginDto;
+
+  // Vérifier si l'utilisateur existe
+  const user = await this.userModel.findOne({ username }).exec();
+  if (!user) {
+    throw new HttpException(
+      { message: 'Invalid username' },
+      HttpStatus.UNAUTHORIZED
+    );
+  }
+
+  // Comparer le mot de passe fourni avec le mot de passe haché en base de données
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    throw new HttpException(
+      { message: 'Invalid password' },
+      HttpStatus.UNAUTHORIZED
+    );
+  }
+
+  // Générer un JWT token
+  const payload = { email: user.email, sub: user._id };
+  const access_token = this.jwtService.sign(payload);
+  return { access_token ,username};
+}
 async findUserById(idUser:String): Promise<{skills :string} > {
   console.log('yodkhel b user id:', idUser);
 

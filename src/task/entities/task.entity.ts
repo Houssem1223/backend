@@ -13,7 +13,7 @@ export class Task {
     @Prop({ required: true })
     description: string;
 
-    @Prop({ required: true, enum: ['To Do', 'Ongoing', 'Done', 'On Hold'], default: 'To Do' })
+    @Prop({ required: true, enum: ['To Do', 'Ongoing', 'Done', 'On Hold'] })
     status: string;
 
     @Prop({ type: Types.ObjectId, ref: 'User', required: true })
