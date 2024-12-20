@@ -18,6 +18,8 @@ import { WebsocketsModule } from './websockets/websockets.module';
 import { join } from 'path';
 import { TaskModule } from './task/task.module';
 import { StripeModule } from './stripe/stripe.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { EndorsementsModule } from './endorsements/endorsements.module';
 
 
 
@@ -50,6 +52,8 @@ import { StripeModule } from './stripe/stripe.module';
     WebsocketsModule,
     TaskModule,
     StripeModule,
+    ReviewsModule,
+    EndorsementsModule,
    
     
   ],

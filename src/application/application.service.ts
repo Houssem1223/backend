@@ -415,4 +415,69 @@ async getActiveProjectsForEntrepreneur(entrepreneurId: string): Promise<any[]> {
 }
 
 
+
+async getApplicationsCountByUser(userId: string): Promise<any[]> {
+  try {
+    // Ensure userId is correctly converted
+    const userObjectId = new Types.ObjectId(userId);
+
+    const result = await this.applicationModel.aggregate([
+      // Add fields to ensure project is an ObjectId
+      {
+        $addFields: {
+          project: { $toObjectId: '$project' },
+        },
+      },
+      // Join with the projets collection
+      {
+        $lookup: {
+          from: 'projets',
+          localField: 'project',
+          foreignField: '_id',
+          as: 'projectDetails',
+        },
+      },
+      // Match projects that belong to the provided userId
+      {
+        $match: {
+          'projectDetails.userId': userObjectId,
+        },
+      },
+      // Unwind the projectDetails array
+      {
+        $unwind: {
+          path: '$projectDetails',
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      // Group applications by project and count them
+      {
+        $group: {
+          _id: '$project',
+          count: { $sum: 1 },
+          projectDetails: { $first: '$projectDetails' },
+        },
+      },
+      // Project the final structure
+      {
+        $project: {
+          projectId: '$_id',
+          projectTitle: '$projectDetails.title',
+          applicationCount: '$count',
+        },
+      },
+    ]);
+
+    console.log('Aggregation Result:', result);
+    return result;
+  } catch (error) {
+    console.error('Error in getApplicationsCountByUser:', error.message);
+    throw new Error('Failed to get applications count by user');
+  }
+}
+
+
+
+
+
 }

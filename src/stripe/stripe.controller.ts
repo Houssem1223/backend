@@ -6,7 +6,7 @@ import { RawRequest } from 'src/interfaces/raw-request.interface';
 @Controller('stripe')
 export class StripeController {
   private readonly stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2024-11-20.acacia', // Remplace par la version correcte
+    apiVersion: '2024-12-18.acacia', // Use the correct version
   });
 
 //constructor(private readonly paymentService: PaymentService) {}
@@ -24,7 +24,9 @@ export class StripeController {
       );
     } catch (err) {
       console.error('Webhook error:', err.message);
-      return response.status(HttpStatus.BAD_REQUEST).send(`Webhook Error: ${err.message}`);
+      return response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(`Webhook Error: ${err.message}`); // Correctly wrap in backticks for string interpolation
     }
 
     // Gestion des événements Stripe

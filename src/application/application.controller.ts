@@ -33,7 +33,7 @@ export class ApplicationController {
     return this.applicationService.getProjectFromApplication(freelancerId);
   }
 
-  @Get(':id')
+  @Get('//:id')
   findOne(@Param('id') id: string) {
     return this.applicationService.findOne(id);
   }
@@ -62,7 +62,7 @@ export class ApplicationController {
     // Mettre à jour le statut via le service
     return this.applicationService.updateStatus(projectId, status);
   }
-  @Patch(':id')
+  @Patch('/:id')
   async updateApplicationStatus1(
     @Param('projectId') projectId: string,
     @Body('status') status: string
@@ -133,7 +133,11 @@ async getAcceptedProjectsForFreelancer(@Param('freelancerId') freelancerId: stri
       throw new NotFoundException(error.message);
     }
   }
-    
+  @Get('applications-count/:userId')
+  async getApplicationsCountByUser(@Param('userId') userId: string) {
+    return this.applicationService.getApplicationsCountByUser(userId);
+  }
+  
   
   
 }
